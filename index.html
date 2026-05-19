@@ -407,7 +407,7 @@
 </head>
 <body>
 
-  <nav>
+  <nav {id}="top">
     <a href="index.html" class="nav-logo">Fanuel <span>Glanzmann</span></a>
     <ul class="nav-links">
       <li><a href="index.html">Início</a></li>
@@ -432,7 +432,7 @@
   </div>
 
   <section class="categorias-section">
-    <!-- TABS DE CATEGORIAS -->
+    <!-- TABS DE CATEGORIAS (Adicionado suporte robusto ao clique no emoji) -->
     <div class="cat-tabs">
       <button class="cat-tab active" onclick="filtrar('todos', event)">🗂 Todos os testes</button>
       <button class="cat-tab" onclick="filtrar('ansiedade', event)">😰 Ansiedade</button>
@@ -516,11 +516,11 @@
 
   <script>
     // ══════════════════════════════════════════════════════
-    // CONFIGURAÇÃO EMAILJS (ID de Serviço Atualizado!)
+    // CONFIGURAÇÃO EMAILJS (ID de Serviço Ativo!)
     // ══════════════════════════════════════════════════════
     const EMAILJS_CONFIG = {
       publicKey: 'SUA_PUBLIC_KEY',       // Substitua pela sua PublicKey pública do EmailJS
-      serviceId: 'service_xk6z5k5',       // ID do seu serviço integrado
+      serviceId: 'service_xk6z5k5',       // Seu ID de Serviço Ativo e configurado!
       templateId: 'SUA_TEMPLATE_ID'      // Substitua pelo ID do seu template do EmailJS
     };
 
@@ -533,6 +533,42 @@
     // BANCO DE DADOS DE TESTES (PT-BR)
     // ══════════════════════════════════════════════════════
     const TESTES = {
+      bateria_free: {
+        titulo: 'Bateria FREE — Rastreio de Funções Executivas',
+        categoria: 'Atenção / Neuropsicológico',
+        categoriaId: ['atencao', 'neuro'], // Pertence a ambas as abas!
+        icone: '🧠',
+        tempo: '⏱ ~5 minutos',
+        descricao: 'Escala de rastreio de Funções Executivas baseada na Bateria FREE. Avalia controle inibitório, alternância de regras e atualização mental.',
+        instrucao: 'Pensando na sua rotina do último mês, com que frequência você vivencia ou percebe cada uma das situações a seguir?',
+        opcoes: [
+          { label: 'Nunca ou quase nunca', valor: 0 },
+          { label: 'Raramente', valor: 1 },
+          { label: 'Às vezes', valor: 2 },
+          { label: 'Frequentemente', valor: 3 },
+          { label: 'Quase sempre', valor: 4 }
+        ],
+        questoes: [
+          'Tenho dificuldade em resistir a distrações ou impulsos quando estou focado em uma tarefa importante (Inibição).',
+          'Digo coisas sem pensar ou interrompo outras pessoas antes que terminem de falar (Inibição).',
+          'Sinto dificuldade em parar uma atividade prazerosa para iniciar uma obrigação necessária (Inibição).',
+          'Tendo a agir de forma automática em situações novas, cometendo erros por pressa ou falta de pausa (Inibição).',
+          'Tenho dificuldade em me adaptar rapidamente quando meus planos mudam de última hora (Alternância).',
+          'Acho difícil alternar entre duas tarefas diferentes sem perder o ritmo ou me confundir (Alternância).',
+          'Fico apegado(a) a uma única forma de resolver um problema, mesmo quando me mostram um caminho mais fácil (Alternância).',
+          'Demoro a recuperar o foco ou me sinto confuso(a) depois de ser interrompido(a) no meio de um trabalho (Alternância).',
+          'Esqueço o que ia fazer ou buscar logo ao entrar em um cômodo da casa (Atualização).',
+          'Tenho dificuldade em manter números, nomes ou instruções curtas na cabeça enquanto executo uma tarefa (Atualização).',
+          'Perco facilmente o fio da meada em conversas longas ou ao ler textos densos (Atualização).',
+          'Acho difícil realizar cálculos de cabeça ou organizar mentalmente os passos do meu dia (Atualização).'
+        ],
+        interpretar: (score) => {
+          if (score <= 12) return { nivel: 'Excelente Funcionamento Executivo', icone: '🟢', cor: '#4CAF50', texto: 'Seus resultados indicam ótimo funcionamento das funções executivas. Suas habilidades de inibição, flexibilidade de pensamento e memória de trabalho estão equilibradas e atuantes.' };
+          if (score <= 24) return { nivel: 'Flutuações Executivas Leves', icone: '🟡', cor: '#FFC107', texto: 'Há indícios de dificuldades leves em processos de foco, memória de curto prazo ou adaptabilidade. Costuma estar associado a cansaço temporário, estresse acumulado ou rotinas sobrecarregadas.' };
+          if (score <= 36) return { nivel: 'Dificuldade Executiva Moderada', icone: '🟠', cor: '#FF9800', texto: 'Seus resultados apontam prejuízos moderados na regulação cognitiva diária. Dificuldades em manter a atenção (Atualização), agir reflexivamente (Inibição) ou mudar de planos (Alternância) podem estar gerando desgaste ou queda de produtividade.' };
+          return { nivel: 'Alerta de Déficit Executivo Severo', icone: '🔴', cor: '#F44336', texto: 'Pontuação indica um nível elevado de queixas relacionadas ao funcionamento cognitivo e executivo. Sugere-se uma investigação clínica minuciosa com o psicólogo Fanuel para investigar possíveis condições neuropsicológicas subjacentes.' };
+        }
+      },
       gad7: {
         titulo: 'GAD-7 — Escala de Ansiedade Generalizada',
         categoria: 'Ansiedade',
@@ -590,7 +626,7 @@
         ],
         interpretar: (score) => {
           if (score <= 4) return { nivel: 'Sem Depressão Significativa', icone: '🟢', cor: '#4CAF50', texto: 'Seus resultados não indicam presença de episódio depressivo significativo. Mantenha hábitos de autocuidado e bem-estar.' };
-          if (score <= 9) return { nivel: 'Depressão Leve', icone: '🟡', cor: '#FFC107', texto: 'Há sinais de depression leve. Sintomas de humor, energia e sono merecem atenção. Uma conversa com o psicólogo pode ser muito útil para avaliar e prevenir progressão.' };
+          if (score <= 9) return { nivel: 'Depressão Leve', icone: '🟡', cor: '#FFC107', texto: 'Há sinais de depressão leve. Sintomas de humor, energia e sono merecem atenção. Uma conversa com o psicólogo pode ser muito útil para avaliar e prevenir progressão.' };
           if (score <= 14) return { nivel: 'Depressão Moderada', icone: '🟠', cor: '#FF9800', texto: 'Atenção: os resultados indicam depressão moderada. É importante buscar avaliação profissional. O tratamento psicológico apresenta excelentes resultados.' };
           if (score <= 19) return { nivel: 'Depressão Moderadamente Grave', icone: '🔴', cor: '#F44336', texto: 'Os sintomas indicam depressão em nível elevado. Por favor, entre em contato o quanto antes. Apoio profissional é fundamental e há boas perspectivas com o tratamento adequado.' };
           return { nivel: 'Depressão Grave', icone: '🆘', cor: '#B71C1C', texto: 'Resultados indicam depressão grave. Busque apoio profissional com urgência. Não enfrente isso sozinho(a). O psicólogo Fanuel está disponível para te ajudar.' };
@@ -670,7 +706,7 @@
         icone: '🌀',
         tempo: '⏱ ~5 minutos',
         descricao: 'Avaliação multidimensional de bem-estar subjetivo, engajamento, relacionamentos, significado e realizações.',
-        instrucao: 'Pensando em sua vida de forma geral, indique seu nível de concordância com cada afirmação:',
+        instrucao: 'Pensando em sua vida de forma geral, indique seu nível de ocorrância com cada afirmação:',
         opcoes: [
           { label: 'Discordo totalmente', valor: 1 },
           { label: 'Discordo parcialmente', valor: 2 },
@@ -709,7 +745,7 @@
     let dadosAvaliado = {};
 
     // ══════════════════════════════════════════════════════
-    // GERADOR DINÂMICO DE CARDS VISUAIS
+    // GERADOR DINÂMICO DE CARDS VISUAIS (Atualizado para múltiplos IDs)
     // ══════════════════════════════════════════════════════
     function renderizarCards() {
       const container = document.getElementById('lista-todos');
@@ -718,9 +754,12 @@
       for (const id in TESTES) {
         const t = TESTES[id];
         const numQuestoes = t.questoes.length;
+        
+        // Se for array de categorias, junta com espaços para o atributo data-cat
+        const catAttr = Array.isArray(t.categoriaId) ? t.categoriaId.join(' ') : t.categoriaId;
 
         container.innerHTML += `
-          <div class="teste-card" data-cat="${t.categoriaId}" onclick="abrirTeste('${id}')">
+          <div class="teste-card" data-cat="${catAttr}" onclick="abrirTeste('${id}')">
             <div class="teste-card-content">
               <div class="teste-card-icon">${t.icone}</div>
               <div class="teste-card-cat">${t.categoria}</div>
@@ -737,17 +776,19 @@
     }
 
     // ══════════════════════════════════════════════════════
-    // MECANISMO DE FILTRAGEM DE CATEGORIAS
+    // MECANISMO DE FILTRAGEM DE CATEGORIAS (Suporte robusto a múltiplos IDs)
     // ══════════════════════════════════════════════════════
     function filtrar(cat, event) {
       if (event) {
         document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
-        // Usamos currentTarget para capturar o botão de forma precisa
+        // Captura o botão inteiro de forma precisa, sem falhar no clique de emojis internos
         event.currentTarget.classList.add('active');
       }
 
       document.querySelectorAll('.teste-card').forEach(card => {
-        if (cat === 'todos' || card.dataset.cat === cat) {
+        // Divide o atributo data-cat (que pode ter múltiplos IDs separados por espaço)
+        const categoriasDoCard = card.dataset.cat.split(' ');
+        if (cat === 'todos' || categoriasDoCard.includes(cat)) {
           card.style.display = 'flex';
         } else {
           card.style.display = 'none';
@@ -788,7 +829,7 @@
       questaoAtual = 0;
       respostas = [];
 
-      document.getElementById('modal-categoria').textContent = testeAtual.categoria;
+      document.getElementById('modal-categoria').textContent = Array.isArray(testeAtual.categoria) ? testeAtual.categoria.join(' / ') : testeAtual.categoria;
       document.getElementById('modal-titulo').textContent = testeAtual.titulo;
 
       // Recuperar dados guardados previamente para melhorar a experiência do usuário
@@ -804,7 +845,7 @@
     }
 
     function fecharModal() {
-      // Impede fechar se estiver respondendo (para não perder o progresso)
+      // Impede fechar se estiver respondendo (para não perder o progresso de respostas)
       if (faseAtual === 1) {
         mostrarToast('Por favor, finalize o teste ou utilize o botão de "Voltar" para cancelar.');
         return;
@@ -848,7 +889,7 @@
           return; 
         }
 
-        // Guardar as credenciais no localStorage
+        // Guardar as credenciais no localStorage do dispositivo
         localStorage.setItem('psi_nome', nome);
         localStorage.setItem('psi_idade', idade);
         localStorage.setItem('psi_telefone', telefone);
@@ -960,7 +1001,7 @@
         <div class="resultado-texto">${result.texto}</div>
         <div class="cta-profissional">
           <h4>Próximo passo: fale com o psicólogo</h4>
-          <p>Este resultado é uma triagem inicial. O Psicólogo Fanuel Glanzmann analisará suas respostas em detalhes e entrará em contato para orientações personalizadas.</p>
+          <p>Este resultado é uma triagem inicial baseada no modelo de Miyake et al. O Psicólogo Fanuel Glanzmann analisará suas respostas em detalhes e entrará em contato para orientações personalizadas.</p>
           <a href="https://wa.me/5524988378145?text=Olá, Fanuel! Realizei o teste *${testeAtual.titulo}* e gostaria de conversar sobre meu resultado." target="_blank" class="btn-whatsapp-resultado">
             💬 Entrar em contato agora
           </a>
@@ -992,7 +1033,7 @@
         avaliado_email: dadosAvaliado.email || 'Não informado',
         avaliado_motivo: dadosAvaliado.motivo || 'Não informado',
         teste_nome: testeAtual.titulo,
-        teste_categoria: testeAtual.categoria,
+        teste_categoria: Array.isArray(testeAtual.categoria) ? testeAtual.categoria.join(' / ') : testeAtual.categoria,
         score: score,
         score_max: maxScore,
         nivel: result.nivel,
@@ -1003,7 +1044,7 @@
       // Se a chave pública ainda não foi configurada
       if (EMAILJS_CONFIG.publicKey === 'SUA_PUBLIC_KEY') {
         console.warn('Configuração inicial do EmailJS pendente. Chave pública padrão detectada.');
-        document.getElementById('email-status').textContent = '⚠️ Configuração do EmailJS pendente. Por favor, entre em contato através do WhatsApp para prosseguirmos.';
+        document.getElementById('email-status').textContent = '⚠️ Configure o EmailJS para envio automático. Por enquanto, entre em contato via WhatsApp.';
         return;
       }
 
@@ -1027,7 +1068,7 @@
       setTimeout(() => t.classList.remove('show'), 3500);
     }
 
-    // Fechar modal ao clicar na overlay escura lateral
+    // Fecha o modal ao clicar fora da área principal de conteúdo
     document.getElementById('modalOverlay').addEventListener('click', function(e) {
       if (e.target === this) fecharModal();
     });
